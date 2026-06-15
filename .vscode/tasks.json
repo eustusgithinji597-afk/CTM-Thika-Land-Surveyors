@@ -1,0 +1,120 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "npm install",
+      "type": "shell",
+      "command": "npm",
+      "args": ["install"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "npm install --legacy-peer-deps",
+      "type": "shell",
+      "command": "npm",
+      "args": ["install", "--legacy-peer-deps"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "npm run dev",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "dev"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "runOptions": {
+        "runOn": "folderOpen"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^.*$",
+          "file": 1,
+          "location": 2,
+          "message": 3
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^> next dev",
+          "endsPattern": "^.*ready.*on.*"
+        }
+      }
+    },
+    {
+      "label": "npm run build",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "build"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "npm run lint",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "lint"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Database: Check Schema",
+      "type": "shell",
+      "command": "npx",
+      "args": ["drizzle-kit", "check"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Database: Generate Migration",
+      "type": "shell",
+      "command": "npx",
+      "args": ["drizzle-kit", "generate"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Database: Push Schema",
+      "type": "shell",
+      "command": "npx",
+      "args": ["drizzle-kit", "push"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Cache: Clear npm",
+      "type": "shell",
+      "command": "npm",
+      "args": ["cache", "clean", "--force"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "project_id": "YOUR_SUPABASE_PROJECT_ID",
+  "db": {
+    "major_version": 15
+  },
+  "api": {
+    "schemas": ["public", "graphql_public"],
+    "extra_search_path": ["public", "extensions"],
+    "max_rows": 1000
+  },
+  "auth": {
+    "enable_signup": true,
+    "enable_anonymous_signups": false,
+    "jwt": {
+      "exp": 3600,
+      "aud": "authenticated",
+      "secret": "YOUR_JWT_SECRET"
+    },
+    "external": {
+      "phone": {
+        "enabled": false
+      }
+    }
+  },
+  "realtime": {
+    "enabled": true,
+    "max_bytes_per_second": 1000000,
+    "max_connections": 1000,
+    "max_channels_per_connection": 128,
+    "max_joins_per_second": 500,
+    "max_presence_updates_per_second": 500,
+    "max_push_messages_per_second": 500,
+    "log_level": "info",
+    "encrypt_jwt": true
+  }
+}
