@@ -114,7 +114,7 @@ export function PropertyDetailModal({
             <div className="bg-[#F8F9FA] p-4 rounded-lg">
               <p className="text-sm text-gray-600 mb-1">Price</p>
               <p className="text-lg font-semibold text-[#F5A623]">
-                KES {parseFloat(property.price).toLocaleString()}
+KES {Number(property.price).toLocaleString()}
               </p>
             </div>
           </div>
