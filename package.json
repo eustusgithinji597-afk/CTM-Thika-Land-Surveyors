@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-  "seed:admin": "node --import tsx scripts/create-admin.ts",
+    "seed:admin": "node --import tsx scripts/create-admin.ts",
     "db:check": "drizzle-kit check",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
@@ -43,6 +43,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.2.0",
     "@types/node": "^24",
+    "@types/papaparse": "^5.5.2",
     "@types/pg": "^8.20.0",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
