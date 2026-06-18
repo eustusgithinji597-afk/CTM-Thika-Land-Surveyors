@@ -15,7 +15,7 @@ importers:
         specifier: ^5.4.0
         version: 5.4.0(react-hook-form@7.79.0(react@19.2.4))
       '@supabase/supabase-js':
-        specifier: ^2.108.1
+        specifier: ^2.108.2
         version: 2.108.2
       '@vercel/analytics':
         specifier: 1.6.1

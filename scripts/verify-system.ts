@@ -1,6 +1,4 @@
-import "dotenv/config";
 import { Client } from "pg";
-import path from "path";
 
 // Import queries (these are TS files; run with ts-node or via ts-node-esm)
 import queries from "../lib/supabase-client";
@@ -48,18 +46,18 @@ async function checkDbTables() {
     try {
       const p = await client.query(`SELECT id FROM properties LIMIT 1`);
       console.log("Properties sample rows:", p.rowCount);
-    } catch (e) {
-      console.warn("Could not SELECT from properties:", e.message || e);
+    } catch (e: unknown) {
+      console.warn("Could not SELECT from properties:", formatError(e));
     }
 
     try {
       const l = await client.query(`SELECT id FROM leads LIMIT 1`);
       console.log("Leads sample rows:", l.rowCount);
-    } catch (e) {
-      console.warn("Could not SELECT from leads:", e.message || e);
+    } catch (e: unknown) {
+      console.warn("Could not SELECT from leads:", formatError(e));
     }
-  } catch (err) {
-    console.error("DB connection failed:", err.message || err);
+  } catch (err: unknown) {
+    console.error("DB connection failed:", formatError(err));
   } finally {
     await client.end().catch(() => {});
   }

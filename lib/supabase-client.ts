@@ -1,13 +1,17 @@
-// Supabase Client for Real-time Database Operations
-// This utility simplifies queries and real-time subscriptions
+// Supabase Client for real-time database operations.
 
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type RealtimePostgresChangesPayload } from "@supabase/supabase-js";
 
-// Initialize Supabase client configuration values
+type SupabasePayload = RealtimePostgresChangesPayload<Record<string, unknown>>;
+type UntypedSupabaseClient = {
+  from: (table: string) => any;
+};
+
+// Public client configuration values are intentionally allowed to be empty at
+// compile time so Vercel builds can complete before runtime env vars are wired.
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
 
-// Client-side Supabase client (public read-only for most operations)
 export const supabasePublic = createClient(supabaseUrl, supabaseAnonKey, {
   realtime: {
     params: {
@@ -21,13 +25,13 @@ let supabaseAdminClient: ReturnType<typeof createClient> | null = null;
 function getSupabaseAdmin() {
   if (supabaseAdminClient) return supabaseAdminClient;
 
+  if (typeof window !== "undefined") {
+    throw new Error("Supabase admin client cannot be used in the browser");
+  }
+
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  
-  // 🛡️ SAFE FALLBACK: If executed in the browser context, divert gracefully 
-  // to the public client instead of throwing a hard application crash.
-  if (typeof window !== 'undefined' || !serviceRoleKey) {
-    console.warn("⚠️ Redirecting to public instance layer inside browser viewport.");
-    return supabasePublic;
+  if (!supabaseUrl || !serviceRoleKey) {
+    throw new Error("Supabase admin credentials are not configured");
   }
 
   supabaseAdminClient = createClient(supabaseUrl, serviceRoleKey, {
@@ -39,9 +43,11 @@ function getSupabaseAdmin() {
   return supabaseAdminClient;
 }
 
-// Property Database Operations
+function getUntypedSupabaseAdmin(): UntypedSupabaseClient {
+  return getSupabaseAdmin() as UntypedSupabaseClient;
+}
+
 export const propertyQueries = {
-  // Fetch all available properties (public layout)
   async getAllProperties() {
     const { data, error } = await supabasePublic
       .from("properties")
@@ -53,9 +59,8 @@ export const propertyQueries = {
     return data;
   },
 
-  // Fetch all properties including sold entries (admin dashboard grid)
   async getAllPropertiesAdmin() {
-    const { data, error } = await getSupabaseAdmin()
+    const { data, error } = await getUntypedSupabaseAdmin()
       .from("properties")
       .select("*")
       .order("created_at", { ascending: false });
@@ -64,7 +69,6 @@ export const propertyQueries = {
     return data;
   },
 
-  // Fetch single property by structural database key ID
   async getPropertyById(id: string) {
     const { data, error } = await supabasePublic
       .from("properties")
@@ -76,15 +80,13 @@ export const propertyQueries = {
     return data;
   },
 
-  // Create new property listing (admin dashboard panels)
-  async createProperty(property: any) {
-    // 🎛️ Fix database string cast issues for KES numeric prices safely
+  async createProperty(property: Record<string, unknown>) {
     const formattedProperty = {
       ...property,
-      price: property.price ? String(property.price) : "0.00"
+      price: property.price ? String(property.price) : "0.00",
     };
 
-    const { data, error } = await getSupabaseAdmin()
+    const { data, error } = await getUntypedSupabaseAdmin()
       .from("properties")
       .insert([formattedProperty])
       .select()
@@ -94,14 +96,13 @@ export const propertyQueries = {
     return data;
   },
 
-  // Update specific property listings parameters (admin toggle functions)
-  async updateProperty(id: string, updates: any) {
+  async updateProperty(id: string, updates: Record<string, unknown>) {
     const formattedUpdates = { ...updates };
     if (updates.price) {
       formattedUpdates.price = String(updates.price);
     }
 
-    const { data, error } = await getSupabaseAdmin()
+    const { data, error } = await getUntypedSupabaseAdmin()
       .from("properties")
       .update(formattedUpdates)
       .eq("id", id)
@@ -112,7 +113,6 @@ export const propertyQueries = {
     return data;
   },
 
-  // Completely purge property rows from tables (admin panel delete triggers)
   async deleteProperty(id: string) {
     const { error } = await getSupabaseAdmin()
       .from("properties")
@@ -123,8 +123,7 @@ export const propertyQueries = {
     return true;
   },
 
-  // Subscribe to property changes via WebSockets (real-time streaming loops)
-  subscribeToProperties(callback: (payload: any) => void) {
+  subscribeToProperties(callback: (payload: SupabasePayload) => void) {
     const channel = supabasePublic
       .channel("properties-realtime-feed")
       .on(
@@ -142,11 +141,9 @@ export const propertyQueries = {
   },
 };
 
-// Lead Database Operations
 export const leadQueries = {
-  // Fetch all incoming prospective lead records (admin viewport)
   async getAllLeads() {
-    const { data, error } = await getSupabaseAdmin()
+    const { data, error } = await getUntypedSupabaseAdmin()
       .from("leads")
       .select("*")
       .order("created_at", { ascending: false });
@@ -155,7 +152,6 @@ export const leadQueries = {
     return data;
   },
 
-  // Fetch fresh unread customer lead records (admin alert systems)
   async getUnreadLeads() {
     const { data, error } = await getSupabaseAdmin()
       .from("leads")
@@ -167,8 +163,7 @@ export const leadQueries = {
     return data;
   },
 
-  // Create and submit a new customer inquiry form row (public ad landing page)
-  async createLead(lead: any) {
+  async createLead(lead: Record<string, unknown>) {
     const { data, error } = await supabasePublic
       .from("leads")
       .insert([lead])
@@ -179,9 +174,8 @@ export const leadQueries = {
     return data;
   },
 
-  // Update client interaction status logs (admin verification controls)
   async updateLeadStatus(id: string, status: "new" | "contacted") {
-    const { data, error } = await getSupabaseAdmin()
+    const { data, error } = await getUntypedSupabaseAdmin()
       .from("leads")
       .update({ status })
       .eq("id", id)
@@ -192,12 +186,8 @@ export const leadQueries = {
     return data;
   },
 
-  // Subscribe to real-time client intake events (admin desktop alerts)
-  subscribeToLeads(callback: (payload: any) => void) {
-    // 🛡️ Always fallback to the public channel framework for client viewports
-    const clientInstance = typeof window !== 'undefined' ? supabasePublic : getSupabaseAdmin();
-    
-    const channel = clientInstance
+  subscribeToLeads(callback: (payload: SupabasePayload) => void) {
+    const channel = supabasePublic
       .channel("leads-realtime-feed")
       .on(
         "postgres_changes",
@@ -213,10 +203,9 @@ export const leadQueries = {
     return channel;
   },
 
-  // Aggregate active conversion performance metrics (admin home screen)
   async getLeadMetrics() {
     const currentAdmin = getSupabaseAdmin();
-    
+
     const { count: newCount, error: errorNew } = await currentAdmin
       .from("leads")
       .select("*", { count: "exact", head: true })
@@ -242,9 +231,7 @@ export const leadQueries = {
   },
 };
 
-// Storage Operations for Images
 export const storageQueries = {
-  // Upload plot media files straight to Supabase Cloud Buckets
   async uploadPropertyImages(propertyId: string, files: File[]) {
     const uploadedUrls: string[] = [];
     const currentAdmin = getSupabaseAdmin();
@@ -271,7 +258,6 @@ export const storageQueries = {
     return uploadedUrls;
   },
 
-  // Completely wipe tracking picture assets from cloud server storage files
   async deletePropertyImage(imagePath: string) {
     const { error } = await getSupabaseAdmin()
       .storage.from("property-images")

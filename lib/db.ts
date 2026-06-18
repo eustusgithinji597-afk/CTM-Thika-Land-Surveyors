@@ -1,17 +1,28 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Client } from 'pg';
 import * as schema from './db-schema';
+import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 
-const client = new Client({
-  connectionString: process.env.DATABASE_URL,
-});
+let client: Client | null = null;
+let db: NodePgDatabase<typeof schema>;
 
-let db: ReturnType<typeof drizzle>;
+function getClient() {
+  if (!process.env.DATABASE_URL) {
+    throw new Error('DATABASE_URL is not configured');
+  }
+
+  client ??= new Client({
+    connectionString: process.env.DATABASE_URL,
+  });
+
+  return client;
+}
 
 export async function initializeDb() {
   if (!db) {
-    await client.connect();
-    db = drizzle(client, { schema });
+    const pgClient = getClient();
+    await pgClient.connect();
+    db = drizzle(pgClient, { schema });
   }
   return db;
 }

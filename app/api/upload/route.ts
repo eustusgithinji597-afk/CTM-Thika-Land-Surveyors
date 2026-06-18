@@ -1,26 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
-// Initialize Supabase admin client for storage operations
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-if (!supabaseUrl || !supabaseServiceKey) {
-  throw new Error("Supabase credentials are not configured");
-}
-
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
-  auth: {
-    persistSession: false,
-  },
-});
-
 const BUCKET_NAME = "property-images";
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB per file
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 
+function getSupabaseStorageAdmin() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !supabaseServiceKey) {
+    return null;
+  }
+
+  return createClient(supabaseUrl, supabaseServiceKey, {
+    auth: {
+      persistSession: false,
+    },
+  });
+}
+
 export async function POST(request: NextRequest) {
   try {
+    const supabaseAdmin = getSupabaseStorageAdmin();
+    if (!supabaseAdmin) {
+      return NextResponse.json(
+        { error: "Supabase storage credentials are not configured" },
+        { status: 503 },
+      );
+    }
+
     const formData = await request.formData();
     const files = formData.getAll("file") as File[];
 

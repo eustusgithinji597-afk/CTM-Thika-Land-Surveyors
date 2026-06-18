@@ -16,6 +16,11 @@ const pool = new Pool({
 const dbInstance = drizzle(pool, { schema: authSchema });
 
 export const auth = betterAuth({
+  baseURL:
+    process.env.BETTER_AUTH_URL ||
+    process.env.NEXTAUTH_URL ||
+    "http://localhost:3000",
+
   database: drizzleAdapter(
     dbInstance,
     {

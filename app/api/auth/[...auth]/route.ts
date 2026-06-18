@@ -1,8 +1,11 @@
 import { auth } from '@/lib/auth';
-import { toNextJsHandler } from 'better-auth/next-js';
+import { NextRequest } from 'next/server';
 
-// Convert the main Better-Auth instance into Next.js App Router handlers
-const handler = toNextJsHandler(auth);
+// Create universal handlers by passing the web standard Request object directly to better-auth
+export async function GET(request: NextRequest) {
+  return auth.handler(request);
+}
 
-export const GET = handler.GET;
-export const POST = handler.POST;
+export async function POST(request: Request) {
+  return auth.handler(request);
+}

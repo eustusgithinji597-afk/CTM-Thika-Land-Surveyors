@@ -6,14 +6,20 @@ import { createClient } from "@supabase/supabase-js";
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const diagnosticsEnabled = process.env.NODE_ENV !== "production";
 
 export default function TestDbPage() {
   const [status, setStatus] = useState<string>("Initializing...");
-  const [result, setResult] = useState<any>(null);
-  const [error, setError] = useState<any>(null);
+  const [result, setResult] = useState<unknown>(null);
+  const [error, setError] = useState<unknown>(null);
 
   useEffect(() => {
     async function runTest() {
+      if (!diagnosticsEnabled) {
+        setStatus("Diagnostics disabled in production");
+        return;
+      }
+
       setStatus("Checking environment variables...");
       if (!supabaseUrl || !supabaseAnonKey) {
         setError({
@@ -73,8 +79,9 @@ export default function TestDbPage() {
     <main className="min-h-screen bg-background text-slate-900 p-8">
       <h1 className="text-3xl font-bold mb-6">Supabase Diagnostic Test</h1>
       <p className="mb-4">
-        This page checks public Supabase client connectivity and runs a basic
-        insert/select against <code>properties</code>.
+        {diagnosticsEnabled
+          ? "This page checks public Supabase client connectivity and runs a basic insert/select against properties."
+          : "Diagnostics are disabled in production."}
       </p>
       <div className="space-y-4">
         <div>
@@ -86,7 +93,7 @@ export default function TestDbPage() {
         <div>
           <strong>Anon key loaded:</strong> {supabaseAnonKey ? "yes" : "no"}
         </div>
-        {error && (
+        {error !== null && (
           <div className="rounded-lg border border-red-300 bg-red-50 p-4">
             <h2 className="font-semibold text-red-700">Error payload</h2>
             <pre className="whitespace-pre-wrap text-sm">
@@ -94,7 +101,7 @@ export default function TestDbPage() {
             </pre>
           </div>
         )}
-        {result && (
+        {result !== null && (
           <div className="rounded-lg border border-green-300 bg-green-50 p-4">
             <h2 className="font-semibold text-green-700">Result payload</h2>
             <pre className="whitespace-pre-wrap text-sm">

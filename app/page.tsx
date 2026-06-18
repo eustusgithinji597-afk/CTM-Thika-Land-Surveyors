@@ -11,25 +11,30 @@ import { Property } from "@/types";
 import { supabasePublic } from "@/lib/supabase-client";
 
 export const revalidate = 0; // Forces Next.js to always fetch fresh records on every page load
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
+  let initialProperties: Property[] = [];
+
   if (
-    !process.env.NEXT_PUBLIC_SUPABASE_URL ||
-    !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   ) {
-    throw new Error(
-      "Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY",
+    // Fetch properties from your database sorted by newest
+    const { data, error } = await supabasePublic
+      .from("properties")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Supabase fetch failed:", error.message);
+    } else {
+      initialProperties = (data as Property[]) || [];
+    }
+  } else {
+    console.warn(
+      "Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY; rendering homepage with an empty property list.",
     );
-  }
-
-  // Fetch properties from your database sorted by newest
-  const { data: initialProperties, error } = await supabasePublic
-    .from("properties")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    throw new Error(`Supabase fetch failed: ${error.message}`);
   }
 
   return (
@@ -39,9 +44,7 @@ export default async function Home() {
       <TrustAnchors />
 
       {/* 📍 Inject initial database records directly into the real-time grid */}
-      <PropertiesGrid
-        initialProperties={(initialProperties as Property[]) || []}
-      />
+      <PropertiesGrid initialProperties={initialProperties} />
 
       <Services />
 
