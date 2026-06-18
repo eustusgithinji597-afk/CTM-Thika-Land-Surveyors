@@ -48,10 +48,12 @@ export default async function Home() {
 
       <Services />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 px-4 sm:px-6 lg:px-8 py-20 max-w-7xl mx-auto">
-        <LandsNewsWidget />
-        <PropertyFAQ />
-      </div>
+      <section className="bg-[#F1F5F2] px-4 sm:px-6 lg:px-8 py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
+          <LandsNewsWidget />
+          <PropertyFAQ />
+        </div>
+      </section>
 
       <LeadForm />
       <Footer />

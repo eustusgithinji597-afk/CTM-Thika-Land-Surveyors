@@ -58,11 +58,11 @@ export function LeadForm() {
   };
 
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-primary/5" id="contact">
+    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-[#F8F4EA]" id="contact">
       <div className="max-w-2xl mx-auto">
-        <div className="bg-white rounded-lg border border-border p-8">
+        <div className="bg-[#FFFDF7] rounded-lg border border-[#E7DDAF] p-8 shadow-sm">
           <h2 className="text-2xl font-bold text-primary mb-2">Get in Touch</h2>
-          <p className="text-muted-foreground mb-8">
+          <p className="text-[#40576A] mb-8">
             Tell us about your land surveying needs and we&apos;ll contact you shortly
           </p>
 
@@ -75,7 +75,7 @@ export function LeadForm() {
                 type="text"
                 placeholder="John Doe"
                 {...register('name')}
-                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
+                className="w-full px-4 py-2 bg-white border border-[#D6DCE0] rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
               />
               {errors.name && (
                 <p className="text-sm text-red-600 mt-1">{errors.name.message}</p>
@@ -90,7 +90,7 @@ export function LeadForm() {
                 type="tel"
                 placeholder="+254721398102 or 0721398102"
                 {...register('phone')}
-                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
+                className="w-full px-4 py-2 bg-white border border-[#D6DCE0] rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
               />
               {errors.phone && (
                 <p className="text-sm text-red-600 mt-1">{errors.phone.message}</p>
@@ -103,7 +103,7 @@ export function LeadForm() {
               </label>
               <select
                 {...register('serviceType')}
-                className="w-full px-4 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
+                className="w-full px-4 py-2 bg-white border border-[#D6DCE0] rounded-lg focus:outline-none focus:ring-2 focus:ring-accent"
               >
                 <option value="">Select a service</option>
                 <option value="survey">Land Surveying</option>

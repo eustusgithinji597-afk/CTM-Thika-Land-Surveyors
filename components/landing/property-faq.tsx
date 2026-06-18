@@ -44,7 +44,7 @@ export function PropertyFAQ() {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-md border border-primary/10 p-6">
+    <div className="bg-[#FFFDF7] rounded-xl shadow-md border border-[#E7DDAF] p-6">
       <div>
         {/* Header Section */}
         <div className="text-center mb-6">
@@ -52,7 +52,7 @@ export function PropertyFAQ() {
             <span className="text-2xl">🛡️</span>
             Land & Surveying FAQs
           </h3>
-          <p className="text-sm text-foreground/70 leading-relaxed">
+          <p className="text-sm text-[#40576A] leading-relaxed">
             Critical answers to safeguard your property investments in Thika.
           </p>
         </div>
@@ -62,11 +62,11 @@ export function PropertyFAQ() {
           {faqItems.map((item) => (
             <div
               key={item.id}
-              className="border-2 border-primary/20 rounded-lg overflow-hidden bg-white hover:shadow-md transition-all duration-300"
+              className="border-2 border-[#D8E5EB] rounded-lg overflow-hidden bg-[#FAFCFD] hover:border-[#E3C34F] hover:shadow-md transition-all duration-300"
             >
               <button
                 onClick={() => toggleAccordion(item.id)}
-                className="w-full px-4 py-4 flex items-start justify-between bg-white hover:bg-primary/5 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
+                className="w-full px-4 py-4 flex items-start justify-between bg-[#FAFCFD] hover:bg-[#EDF4F7] transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2"
               >
                 <h4 className="text-sm font-bold text-primary text-left leading-snug pr-3">{item.question}</h4>
                 <ChevronDown
@@ -77,8 +77,8 @@ export function PropertyFAQ() {
               </button>
 
               {openId === item.id && (
-                <div className="px-4 py-4 bg-gradient-to-br from-white to-primary/2 border-t-2 border-primary/10">
-                  <p className="text-sm text-foreground/80 leading-relaxed">{item.answer}</p>
+                <div className="px-4 py-4 bg-[#F8FBFC] border-t-2 border-[#D8E5EB]">
+                  <p className="text-sm text-[#344B5F] leading-relaxed">{item.answer}</p>
                 </div>
               )}
             </div>

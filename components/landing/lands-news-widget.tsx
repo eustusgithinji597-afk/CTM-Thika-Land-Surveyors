@@ -82,7 +82,7 @@ export function LandsNewsWidget() {
   const currentArticle = newsArticles[currentIndex];
 
   return (
-    <div className="bg-white rounded-xl shadow-md border border-primary/10">
+    <div className="bg-[#FAFCFD] rounded-xl shadow-md border border-[#D8E5EB]">
       <div className="p-6">
         {/* Header Section */}
         <div className="text-center mb-6">
@@ -90,14 +90,14 @@ export function LandsNewsWidget() {
             <span className="text-2xl">📰</span>
             Ministry of Lands News
           </h3>
-          <p className="text-sm text-foreground/70 leading-relaxed">
+          <p className="text-sm text-[#40576A] leading-relaxed">
             Real-time regulatory updates and ArdhiSasa announcements tracking across Kiambu County.
           </p>
         </div>
 
         {/* News Carousel */}
-        <div className="w-full rounded-xl overflow-hidden border-2 border-primary/20 bg-primary p-1 mb-4">
-          <div className="bg-white h-[350px] flex flex-col justify-between p-6 relative overflow-hidden">
+        <div className="w-full rounded-xl overflow-hidden border-2 border-[#C9DCE6] bg-[#0B3D66] p-1 mb-4">
+          <div className="bg-[#F8FBFC] h-[350px] flex flex-col justify-between p-6 relative overflow-hidden">
             {/* Article Content with Animation */}
             <div className="flex-1 flex flex-col justify-center">
               <div 
@@ -105,17 +105,17 @@ export function LandsNewsWidget() {
                 className="animate-in fade-in-50 slide-in-from-right-1/2 duration-500"
               >
                 <div className="mb-3 inline-block">
-                  <span className="text-xs font-semibold text-accent bg-accent/10 px-3 py-1 rounded-full">
+                  <span className="text-xs font-semibold text-[#0B3D66] bg-[#FFF3B0] px-3 py-1 rounded-full border border-[#E3C34F]/50">
                     {currentArticle.source}
                   </span>
                 </div>
                 <h4 className="text-xl font-bold text-primary mb-3 line-clamp-2">
                   {currentArticle.title}
                 </h4>
-                <p className="text-sm text-foreground/75 mb-4 line-clamp-3 leading-relaxed">
+                <p className="text-sm text-[#344B5F] mb-4 line-clamp-3 leading-relaxed">
                   {currentArticle.description}
                 </p>
-                <p className="text-xs text-foreground/50 font-medium">
+                <p className="text-xs text-[#65798A] font-medium">
                   📅 {currentArticle.date}
                 </p>
               </div>
@@ -125,7 +125,7 @@ export function LandsNewsWidget() {
             <div className="flex items-center justify-between mt-4 pt-4 border-t border-primary/10">
               <button
                 onClick={goToPrevious}
-                className="p-2 hover:bg-primary/10 rounded-full transition-colors duration-200"
+                className="p-2 hover:bg-[#DDEAF0] rounded-full transition-colors duration-200"
                 aria-label="Previous article"
               >
                 <ChevronLeft className="w-5 h-5 text-primary" />
@@ -143,8 +143,8 @@ export function LandsNewsWidget() {
                     }}
                     className={`h-2 rounded-full transition-all duration-300 ${
                       index === currentIndex
-                        ? 'bg-accent w-6'
-                        : 'bg-primary/20 w-2 hover:bg-primary/40'
+                        ? 'bg-[#E3C34F] w-6'
+                        : 'bg-[#0B3D66]/20 w-2 hover:bg-[#0B3D66]/40'
                     }`}
                     aria-label={`Go to article ${index + 1}`}
                   />
@@ -153,7 +153,7 @@ export function LandsNewsWidget() {
 
               <button
                 onClick={goToNext}
-                className="p-2 hover:bg-primary/10 rounded-full transition-colors duration-200"
+                className="p-2 hover:bg-[#DDEAF0] rounded-full transition-colors duration-200"
                 aria-label="Next article"
               >
                 <ChevronRight className="w-5 h-5 text-primary" />
@@ -164,12 +164,12 @@ export function LandsNewsWidget() {
 
         {/* Info Text and Button */}
         <div className="text-center space-y-3">
-          <p className="text-xs text-foreground/60">
+          <p className="text-xs text-[#65798A]">
             Article {currentIndex + 1} of {newsArticles.length} • Auto-rotating every 6 seconds
           </p>
           <button
             onClick={handleOpenMinistryPortal}
-            className="w-full px-4 py-2 bg-transparent text-accent font-bold text-sm border-2 border-accent rounded-lg hover:bg-accent hover:text-primary transition-all duration-300"
+            className="w-full px-4 py-2 bg-transparent text-[#0B3D66] font-bold text-sm border-2 border-[#E3C34F] rounded-lg hover:bg-[#FFF3B0] transition-all duration-300"
           >
             Open Official Ministry Portal
           </button>

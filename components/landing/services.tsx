@@ -39,13 +39,13 @@ export function Services() {
   ];
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary/5 to-transparent" id="services">
+    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-[#EDF4F7]" id="services">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-primary mb-3">Our Services</h2>
-          <p className="text-lg text-foreground/70">Complete surveying solutions for all your property needs</p>
-          <div className="inline-block mt-4 px-4 py-2 bg-accent/20 rounded-full">
-            <p className="text-accent font-semibold text-sm">Licensed & Registered Surveyors</p>
+          <p className="text-lg text-[#27415C]">Complete surveying solutions for all your property needs</p>
+          <div className="inline-block mt-4 px-4 py-2 bg-[#FFF3B0] rounded-full border border-[#E3C34F]/50">
+            <p className="text-[#0B3D66] font-semibold text-sm">Licensed & Registered Surveyors</p>
           </div>
         </div>
 
@@ -59,12 +59,12 @@ export function Services() {
                 href={searchUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-white rounded-xl border-2 border-transparent hover:border-accent hover:shadow-xl transition-all duration-300 group overflow-hidden block p-6"
+                className="bg-[#FAFCFD] rounded-xl border-2 border-[#D8E5EB] hover:border-[#E3C34F] hover:shadow-xl transition-all duration-300 group overflow-hidden block p-6"
               >
-                <h3 className="font-bold text-lg text-primary mb-2 group-hover:text-accent transition-colors duration-200">
+                <h3 className="font-bold text-lg text-primary mb-2 group-hover:text-[#8A6A00] transition-colors duration-200">
                   {service.title}
                 </h3>
-                <p className="text-sm text-foreground/70 leading-relaxed">
+                <p className="text-sm text-[#344B5F] leading-relaxed">
                   {service.description}
                 </p>
               </a>
