@@ -18,7 +18,8 @@ export default async function Home() {
 
   if (
     process.env.NEXT_PUBLIC_SUPABASE_URL &&
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY &&
+    supabasePublic
   ) {
     // Fetch properties from your database sorted by newest
     const { data, error } = await supabasePublic

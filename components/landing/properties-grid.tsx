@@ -20,6 +20,8 @@ export function PropertiesGrid({
     // Keep local component state in sync with server data loads
     setProperties(initialProperties);
 
+    if (!supabasePublic) return;
+
     // Subscribe to any row alterations inside the properties table live
     const channel = supabasePublic
       .channel("realtime-plots-feed")

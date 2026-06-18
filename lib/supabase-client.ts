@@ -12,13 +12,24 @@ type UntypedSupabaseClient = {
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
 
-export const supabasePublic = createClient(supabaseUrl, supabaseAnonKey, {
-  realtime: {
-    params: {
-      eventsPerSecond: 10,
-    },
-  },
-});
+export const supabasePublic =
+  supabaseUrl && supabaseAnonKey
+    ? createClient(supabaseUrl, supabaseAnonKey, {
+        realtime: {
+          params: {
+            eventsPerSecond: 10,
+          },
+        },
+      })
+    : null;
+
+function getSupabasePublic() {
+  if (!supabasePublic) {
+    throw new Error("Supabase public credentials are not configured");
+  }
+
+  return supabasePublic;
+}
 
 let supabaseAdminClient: ReturnType<typeof createClient> | null = null;
 
@@ -49,7 +60,7 @@ function getUntypedSupabaseAdmin(): UntypedSupabaseClient {
 
 export const propertyQueries = {
   async getAllProperties() {
-    const { data, error } = await supabasePublic
+    const { data, error } = await getSupabasePublic()
       .from("properties")
       .select("*")
       .eq("status", "available")
@@ -70,7 +81,7 @@ export const propertyQueries = {
   },
 
   async getPropertyById(id: string) {
-    const { data, error } = await supabasePublic
+    const { data, error } = await getSupabasePublic()
       .from("properties")
       .select("*")
       .eq("id", id)
@@ -124,7 +135,7 @@ export const propertyQueries = {
   },
 
   subscribeToProperties(callback: (payload: SupabasePayload) => void) {
-    const channel = supabasePublic
+    const channel = getSupabasePublic()
       .channel("properties-realtime-feed")
       .on(
         "postgres_changes",
@@ -164,7 +175,7 @@ export const leadQueries = {
   },
 
   async createLead(lead: Record<string, unknown>) {
-    const { data, error } = await supabasePublic
+    const { data, error } = await getSupabasePublic()
       .from("leads")
       .insert([lead])
       .select()
@@ -187,7 +198,7 @@ export const leadQueries = {
   },
 
   subscribeToLeads(callback: (payload: SupabasePayload) => void) {
-    const channel = supabasePublic
+    const channel = getSupabasePublic()
       .channel("leads-realtime-feed")
       .on(
         "postgres_changes",

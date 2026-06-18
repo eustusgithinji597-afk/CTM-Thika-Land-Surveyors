@@ -5,7 +5,6 @@ import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
 const diagnosticsEnabled = process.env.NODE_ENV !== "production";
 
 export default function TestDbPage() {
@@ -31,6 +30,8 @@ export default function TestDbPage() {
         setStatus("Environment variables missing");
         return;
       }
+
+      const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
       setStatus("Inserting test record...");
       const insertPayload = {
