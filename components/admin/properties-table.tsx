@@ -2,9 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import type { Property } from '@/lib/db-schema';
-import { Edit2, Trash2, Plus } from 'lucide-react';
+import { Edit2, Trash2, Plus, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 
 interface PropertiesTableProps {
@@ -24,6 +23,7 @@ export function PropertiesTable({
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
+  const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
 
   useEffect(() => {
     fetchProperties();
@@ -39,6 +39,27 @@ export function PropertiesTable({
       console.error('Error fetching properties:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleStatusChange = async (property: Property, newStatus: 'available' | 'sold') => {
+    setUpdatingStatus(property.id);
+    try {
+      const res = await fetch('/api/properties', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: property.id, status: newStatus }),
+      });
+      if (res.ok) {
+        const updated = await res.json();
+        setProperties((prev) =>
+          prev.map((p) => (p.id === property.id ? updated : p)),
+        );
+      }
+    } catch (error) {
+      console.error('Error updating status:', error);
+    } finally {
+      setUpdatingStatus(null);
     }
   };
 
@@ -184,17 +205,28 @@ export function PropertiesTable({
                       </p>
                     </td>
                     <td className="px-6 py-4">
-                      <Badge
-                        variant={
-                          property.status === 'available'
-                            ? 'default'
-                            : 'secondary'
-                        }
-                      >
-                        {property.status === 'available'
-                          ? 'Available'
-                          : 'Sold'}
-                      </Badge>
+                      {updatingStatus === property.id ? (
+                        <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+                      ) : (
+                        <select
+                          value={property.status}
+                          onChange={(e) =>
+                            handleStatusChange(
+                              property,
+                              e.target.value as 'available' | 'sold',
+                            )
+                          }
+                          className={`px-3 py-1.5 rounded-md text-sm font-medium border cursor-pointer transition
+                            ${
+                              property.status === 'available'
+                                ? 'bg-green-50 text-green-800 border-green-300 hover:bg-green-100'
+                                : 'bg-red-50 text-red-800 border-red-300 hover:bg-red-100'
+                            }`}
+                        >
+                          <option value="available">Available</option>
+                          <option value="sold">Sold</option>
+                        </select>
+                      )}
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">

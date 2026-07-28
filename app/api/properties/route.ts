@@ -92,6 +92,31 @@ export async function PUT(req: NextRequest) {
   }
 }
 
+export async function PATCH(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const { id, status } = body;
+    if (!id) return NextResponse.json({ error: "Property ID is required" }, { status: 400 });
+    if (!["available", "sold"].includes(status)) {
+      return NextResponse.json({ error: "Status must be 'available' or 'sold'" }, { status: 400 });
+    }
+    const { data, error } = await getAdminClient()
+      .from("properties")
+      .update({ status, updated_at: new Date().toISOString() })
+      .eq("id", id)
+      .select()
+      .single();
+    if (error) throw error;
+    return NextResponse.json(data);
+  } catch (error: any) {
+    console.error("Error patching property:", error);
+    return NextResponse.json(
+      { error: "Failed to update property status", details: { message: error?.message } },
+      { status: 500 },
+    );
+  }
+}
+
 export async function DELETE(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
