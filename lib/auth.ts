@@ -1,44 +1,15 @@
-import { betterAuth } from 'better-auth';
-import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { Pool } from 'pg';
-import * as authSchema from 'better-auth/db';
+import { createClient } from "@supabase/supabase-js";
 
-// Use connection pool for serverless environments
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
-  connectionTimeoutMillis: 10000,
-  max: 10,
-});
+export function getSupabaseAdmin() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) throw new Error("Supabase admin credentials not configured");
+  return createClient(url, key, { auth: { persistSession: false } });
+}
 
-// Initialize drizzle orm reference
-const dbInstance = drizzle(pool, { schema: authSchema });
-
-export const auth = betterAuth({
-  baseURL:
-    process.env.BETTER_AUTH_URL ||
-    process.env.NEXTAUTH_URL ||
-    "http://localhost:3000",
-
-  database: drizzleAdapter(
-    dbInstance,
-    {
-      provider: 'pg',
-      schema: authSchema,
-    }
-  ),
-  
-  // 🛡️ Safe fallback avoids compilation crashes if the Vercel key environment drops out
-  secret: process.env.BETTER_AUTH_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || 'fallback-secret-string-value-for-compilation',
-  
-  emailAndPassword: {
-    enabled: true,
-  },
-  
-  trustedOrigins: [
-    process.env.NEXTAUTH_URL || 'http://localhost:3000',
-    process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`,
-    'https://*.vercel.app',
-  ].filter(Boolean) as string[],
-});
+export function getSupabasePublic() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !key) return null;
+  return createClient(url, key);
+}

@@ -18,7 +18,7 @@ export default function AdminLogin() {
     setError('');
 
     try {
-      const response = await fetch('/api/auth/sign-in/email', {
+      const response = await fetch('/api/auth/sign-in', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
