@@ -1,0 +1,3 @@
+module.exports=[30098,a=>{"use strict";var b=a.i(67632),c=a.i(30314);a.s(["Badge",0,function({className:a,variant:d="default",...e}){return(0,b.jsx)("div",{className:(0,c.cn)("inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-semibold transition-colors",{default:"bg-primary text-primary-foreground",secondary:"bg-secondary text-secondary-foreground",outline:"border border-primary text-primary"}[d],a),...e})}])},60099,a=>{"use strict";let b=(0,a.i(54843).default)("circle-check",[["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}],["path",{d:"m9 12 2 2 4-4",key:"dzmm74"}]]);a.s(["CheckCircle2",0,b],60099)}];
+
+//# sourceMappingURL=CTM-Thika-Land-Surveyors_0jwk9w6._.js.map

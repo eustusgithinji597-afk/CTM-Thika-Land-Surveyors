@@ -1,0 +1,3 @@
+module.exports=[11901,(a,b,c)=>{let{createClientModuleProxy:d}=a.r(8638);a.n(d("[project]/CTM-Thika-Land-Surveyors/node_modules/next/dist/client/components/builtin/global-error.js <module evaluation>"))},4478,(a,b,c)=>{let{createClientModuleProxy:d}=a.r(8638);a.n(d("[project]/CTM-Thika-Land-Surveyors/node_modules/next/dist/client/components/builtin/global-error.js"))},89101,a=>{"use strict";a.i(11901);var b=a.i(4478);a.n(b)},15213,a=>{a.n(a.i(89101))}];
+
+//# sourceMappingURL=0-40_next_dist_client_components_builtin_global-error_07oeu76.js.map

@@ -1,0 +1,3 @@
+module.exports=[30098,a=>{"use strict";var b=a.i(67632),c=a.i(30314);a.s(["Badge",0,function({className:a,variant:d="default",...e}){return(0,b.jsx)("div",{className:(0,c.cn)("inline-flex items-center rounded-md px-2.5 py-0.5 text-xs font-semibold transition-colors",{default:"bg-primary text-primary-foreground",secondary:"bg-secondary text-secondary-foreground",outline:"border border-primary text-primary"}[d],a),...e})}])},92160,(a,b,c)=>{"use strict";c._=function(a){return a&&a.__esModule?a:{default:a}}}];
+
+//# sourceMappingURL=CTM-Thika-Land-Surveyors_06gum12._.js.map
