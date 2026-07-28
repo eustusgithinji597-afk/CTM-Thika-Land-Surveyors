@@ -37,7 +37,7 @@ export function Hero() {
         </div>
 
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-6 text-balance leading-tight drop-shadow-xl">
-          Professional Land Survey Services in Thika
+          Professional Land Survey Services in Kenya
         </h1>
         
         <p className="text-lg sm:text-xl text-white/95 mb-8 max-w-2xl mx-auto text-balance font-medium drop-shadow-md">

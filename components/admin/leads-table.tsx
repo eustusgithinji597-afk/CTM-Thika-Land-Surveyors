@@ -56,8 +56,9 @@ export function LeadsTable() {
   const exportToCSV = () => {
     const csvData = leads.map((lead) => ({
       Name: lead.name,
-      Phone: lead.phone,
+      Phone: `="\t${lead.phone}"`,
       'Service Type': (lead as any).service_type?.replace('_', ' '),
+      'Property': (lead as any).property_title || '',
       Status: lead.status,
       'Date': new Date((lead as any).created_at).toLocaleDateString(),
     }));
@@ -110,6 +111,9 @@ export function LeadsTable() {
                     Phone
                   </th>
                   <th className="px-6 py-3 text-left text-sm font-semibold text-primary">
+                    Property
+                  </th>
+                  <th className="px-6 py-3 text-left text-sm font-semibold text-primary">
                     Service
                   </th>
                   <th className="px-6 py-3 text-left text-sm font-semibold text-primary">
@@ -136,6 +140,9 @@ export function LeadsTable() {
                       >
                         {lead.phone}
                       </a>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-muted-foreground max-w-[200px] truncate">
+                      {(lead as any).property_title || '—'}
                     </td>
                     <td className="px-6 py-4 text-sm">
                       <span className="capitalize">

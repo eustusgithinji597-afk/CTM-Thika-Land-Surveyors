@@ -13,6 +13,8 @@ interface PropertiesTableProps {
   onDelete: (id: string) => Promise<void>;
 }
 
+type StatusFilter = 'all' | 'available' | 'sold';
+
 export function PropertiesTable({
   onAddClick,
   onEditClick,
@@ -21,6 +23,7 @@ export function PropertiesTable({
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
 
   useEffect(() => {
     fetchProperties();
@@ -51,6 +54,14 @@ export function PropertiesTable({
     }
   };
 
+  const filteredProperties =
+    statusFilter === 'all'
+      ? properties
+      : properties.filter((p) => p.status === statusFilter);
+
+  const availableCount = properties.filter((p) => p.status === 'available').length;
+  const soldCount = properties.filter((p) => p.status === 'sold').length;
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
@@ -64,19 +75,53 @@ export function PropertiesTable({
         </Button>
       </div>
 
+      <div className="flex items-center gap-4 mb-6">
+        <div className="flex items-center gap-2 bg-white rounded-lg border border-border p-1">
+          {(['all', 'available', 'sold'] as StatusFilter[]).map((filter) => (
+            <button
+              key={filter}
+              onClick={() => setStatusFilter(filter)}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition ${
+                statusFilter === filter
+                  ? filter === 'all'
+                    ? 'bg-primary text-white'
+                    : filter === 'available'
+                      ? 'bg-green-600 text-white'
+                      : 'bg-red-600 text-white'
+                  : 'text-muted-foreground hover:text-primary hover:bg-muted'
+              }`}
+            >
+              {filter === 'all'
+                ? `All (${properties.length})`
+                : filter === 'available'
+                  ? `Available (${availableCount})`
+                  : `Sold (${soldCount})`}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {loading ? (
         <div className="text-center text-muted-foreground py-12">
           Loading properties...
         </div>
-      ) : properties.length === 0 ? (
+      ) : filteredProperties.length === 0 ? (
         <div className="text-center bg-white rounded-lg border border-border p-12">
-          <p className="text-muted-foreground mb-4">No properties yet</p>
-          <Button
-            onClick={onAddClick}
-            className="bg-primary hover:bg-primary/90"
-          >
-            Add First Property
-          </Button>
+          <p className="text-muted-foreground mb-4">
+            {statusFilter === 'all'
+              ? 'No properties yet'
+              : statusFilter === 'available'
+                ? 'No available properties'
+                : 'No sold properties'}
+          </p>
+          {statusFilter !== 'sold' && (
+            <Button
+              onClick={onAddClick}
+              className="bg-primary hover:bg-primary/90"
+            >
+              Add First Property
+            </Button>
+          )}
         </div>
       ) : (
         <div className="bg-white rounded-lg border border-border overflow-hidden">
@@ -102,7 +147,7 @@ export function PropertiesTable({
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {properties.map((property) => (
+                {filteredProperties.map((property) => (
                   <tr
                     key={property.id}
                     className="hover:bg-muted/50 transition"

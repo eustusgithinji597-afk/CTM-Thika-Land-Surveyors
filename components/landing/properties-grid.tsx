@@ -10,7 +10,9 @@ export function PropertiesGrid({
 }: {
   initialProperties: Property[];
 }) {
-  const [properties, setProperties] = useState<Property[]>(initialProperties);
+  const [properties, setProperties] = useState<Property[]>(
+    initialProperties.filter((p) => p.status === "available"),
+  );
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(
     null,
   );
@@ -33,13 +35,17 @@ export function PropertiesGrid({
 
           setProperties((currentPlots) => {
             if (eventType === "INSERT") {
-              return [newRecord as Property, ...currentPlots];
+              return (newRecord as Property).status === "available"
+                ? [newRecord as Property, ...currentPlots]
+                : currentPlots;
             }
             if (eventType === "UPDATE") {
+              const updated = newRecord as Property;
+              if (updated.status !== "available") {
+                return currentPlots.filter((plot) => plot.id !== updated.id);
+              }
               return currentPlots.map((plot) =>
-                plot.id === (newRecord as Property).id
-                  ? (newRecord as Property)
-                  : plot,
+                plot.id === updated.id ? updated : plot,
               );
             }
             if (eventType === "DELETE") {
@@ -58,7 +64,7 @@ export function PropertiesGrid({
   }, [initialProperties]);
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto" id="verified-plots-section">
       <h2 className="text-3xl font-bold mb-8 text-[#0F294A]">
         📍 Verified Plots for Sale
       </h2>

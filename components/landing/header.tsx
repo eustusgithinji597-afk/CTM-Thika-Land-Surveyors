@@ -24,7 +24,7 @@ export function Header() {
 
         <div className="hidden md:flex items-center gap-6">
           <a href="#services" className="text-white hover:text-accent transition text-sm font-medium">Services</a>
-          <a href="#properties" className="text-white hover:text-accent transition text-sm font-medium">Properties</a>
+          <a href="#verified-plots-section" className="text-white hover:text-accent transition text-sm font-medium">Properties</a>
           <a href="#contact" className="text-white hover:text-accent transition text-sm font-medium">Contact</a>
         </div>
 

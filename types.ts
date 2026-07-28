@@ -24,6 +24,7 @@ export interface Lead {
   name: string;
   phone: string;
   service_type: ServiceType;
+  property_title?: string | null;
   status: LeadStatus;
   created_at: string;
   updated_at: string;

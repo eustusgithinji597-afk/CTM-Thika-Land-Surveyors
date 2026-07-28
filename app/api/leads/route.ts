@@ -32,10 +32,10 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { name, phone, serviceType } = body;
+    const { name, phone, serviceType, propertyTitle } = body;
     const { data, error } = await getAdminClient()
       .from("leads")
-      .insert([{ name, phone, service_type: serviceType, status: "new" }])
+      .insert([{ name, phone, service_type: serviceType, status: "new", property_title: propertyTitle || null }])
       .select()
       .single();
     if (error) throw error;

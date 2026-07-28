@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { Property } from "@/types";
-import { X, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { PropertyBookingModal } from "./property-booking-modal";
 
 interface PropertyDetailModalProps {
   property: Property | null;
@@ -18,6 +19,7 @@ export function PropertyDetailModal({
   onClose,
 }: PropertyDetailModalProps) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showBookingForm, setShowBookingForm] = useState(false);
 
   if (!isOpen || !property) return null;
 
@@ -186,7 +188,7 @@ KES {Number(property.price).toLocaleString()}
                   </Button>
                 </a>
                 <Button
-                  onClick={onClose}
+                  onClick={() => setShowBookingForm(true)}
                   className="w-full bg-[#F5A623] hover:bg-[#F5A623]/90 text-[#0F294A] font-bold py-6 text-base"
                 >
                   📋 Fill Contact Form
@@ -196,6 +198,13 @@ KES {Number(property.price).toLocaleString()}
           </div>
         </div>
       </div>
+
+      <PropertyBookingModal
+        propertyTitle={property.title}
+        propertyLocation={property.location}
+        isOpen={showBookingForm}
+        onClose={() => setShowBookingForm(false)}
+      />
     </div>
   );
 }
