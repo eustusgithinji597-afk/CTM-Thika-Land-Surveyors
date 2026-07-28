@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 76, "column": 0}, "map": {"version":3,"sources":["file:///D:/arcgis/CTM-Thika-Land-Surveyors/proxy.ts"],"sourcesContent":["import { NextRequest, NextResponse } from \"next/server\";\r\n\r\nexport function proxy(request: NextRequest) {\r\n  const { pathname } = request.nextUrl;\r\n\r\n  if (pathname.startsWith(\"/admin\") && !pathname.startsWith(\"/admin/login\")) {\r\n    // Admin auth enforcement can be added here when session validation is finalized.\r\n  }\r\n\r\n  return NextResponse.next();\r\n}\r\n\r\nexport const config = {\r\n  matcher: [\"/admin/:path*\"],\r\n};\r\n"],"names":["proxy","request","pathname","nextUrl","startsWith","next","config","matcher"],"mappings":";;;;;;AAAA;;AAEO,SAASA,MAAMC,OAAoB;IACxC,MAAM,EAAEC,QAAQ,EAAE,GAAGD,QAAQE,OAAO;IAEpC,IAAID,SAASE,UAAU,CAAC,aAAa,CAACF,SAASE,UAAU,CAAC,iBAAiB;IACzE,iFAAiF;IACnF;IAEA,OAAO,8IAAY,CAACC,IAAI;AAC1B;AAEO,MAAMC,SAAS;IACpBC,SAAS;QAAC;KAAgB;AAC5B"}}]
-}
