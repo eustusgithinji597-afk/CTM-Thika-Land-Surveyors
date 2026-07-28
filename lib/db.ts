@@ -1,39 +1,55 @@
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { Client } from 'pg';
-import * as schema from './db-schema';
-import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { createClient } from "@supabase/supabase-js";
 
-let client: Client | null = null;
-let db: NodePgDatabase<typeof schema>;
+let adminClient: ReturnType<typeof createClient> | null = null;
 
-function getClient() {
-  if (!process.env.DATABASE_URL) {
-    throw new Error('DATABASE_URL is not configured');
-  }
-
-  client ??= new Client({
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false },
-    connectionTimeoutMillis: 10000,
-  });
-
-  return client;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getAdmin(): any {
+  if (adminClient) return adminClient;
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) throw new Error("Supabase admin credentials not configured");
+  adminClient = createClient(url, key, { auth: { persistSession: false } });
+  return adminClient;
 }
 
-export async function initializeDb() {
-  if (!db) {
-    const pgClient = getClient();
-    await pgClient.connect();
-    db = drizzle(pgClient, { schema });
-  }
-  return db;
-}
+export const db = {
+  async queryProperties() {
+    const { data, error } = await getAdmin()
+      .from("properties")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    return data || [];
+  },
+  async queryLeads() {
+    const { data, error } = await getAdmin()
+      .from("leads")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+    return data || [];
+  },
+  async insertProperty(values: Record<string, unknown>) {
+    const { data, error } = await getAdmin()
+      .from("properties")
+      .insert([values])
+      .select()
+      .single();
+    if (error) throw error;
+    return data;
+  },
+  async insertLead(values: Record<string, unknown>) {
+    const { data, error } = await getAdmin()
+      .from("leads")
+      .insert([values])
+      .select()
+      .single();
+    if (error) throw error;
+    return data;
+  },
+  get client() {
+    return getAdmin();
+  },
+};
 
-export async function getDb() {
-  if (!db) {
-    await initializeDb();
-  }
-  return db;
-}
-
-export { schema };
+export default db;

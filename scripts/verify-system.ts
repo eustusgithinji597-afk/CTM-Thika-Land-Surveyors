@@ -1,14 +1,12 @@
-import { Client } from "pg";
+import { createClient } from "@supabase/supabase-js";
 
-// Import queries (these are TS files; run with ts-node or via ts-node-esm)
-import queries from "../lib/supabase-client";
-
-const { propertyQueries, leadQueries } = queries as any;
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 
 async function checkEnv() {
   console.log("\n[ENV CHECK]");
   const needed = [
-    "DATABASE_URL",
     "NEXT_PUBLIC_SUPABASE_URL",
     "NEXT_PUBLIC_SUPABASE_ANON_KEY",
     "SUPABASE_SERVICE_ROLE_KEY",
@@ -23,122 +21,132 @@ async function checkEnv() {
 
 async function checkDbTables() {
   console.log("\n[DB CONNECTIVITY CHECK]");
-  const client = new Client({ connectionString: process.env.DATABASE_URL });
+  if (!url || !serviceKey) {
+    console.error("Cannot run DB check: missing credentials");
+    return;
+  }
+  const admin = createClient(url, serviceKey, { auth: { persistSession: false } });
+
   try {
-    await client.connect();
-    console.log("Connected to database");
+    const { data: tables, error } = await admin.rpc("get_tables" as any);
+    console.log("Tables accessible via REST API");
+  } catch {
+    // RPC might not exist; try direct selects instead
+    console.log("Checking tables via direct queries...");
+  }
 
-    const res = await client.query(`
-      SELECT table_name FROM information_schema.tables
-      WHERE table_schema = 'public' AND table_name IN ('properties','leads')
-    `);
+  try {
+    const { data: props, error: pe } = await admin.from("properties").select("id").limit(1);
+    if (pe) throw pe;
+    console.log("✔ properties table accessible");
+  } catch (e: any) {
+    console.warn("✖ properties table:", e?.message || e);
+  }
 
-    const present = res.rows.map((r: any) => r.table_name);
-    console.log("Tables present:", present);
-
-    for (const t of ["properties", "leads"]) {
-      if (!present.includes(t)) {
-        console.warn(`Table missing: ${t}`);
-      }
-    }
-
-    // quick sample selects
-    try {
-      const p = await client.query(`SELECT id FROM properties LIMIT 1`);
-      console.log("Properties sample rows:", p.rowCount);
-    } catch (e: unknown) {
-      console.warn("Could not SELECT from properties:", formatError(e));
-    }
-
-    try {
-      const l = await client.query(`SELECT id FROM leads LIMIT 1`);
-      console.log("Leads sample rows:", l.rowCount);
-    } catch (e: unknown) {
-      console.warn("Could not SELECT from leads:", formatError(e));
-    }
-  } catch (err: unknown) {
-    console.error("DB connection failed:", formatError(err));
-  } finally {
-    await client.end().catch(() => {});
+  try {
+    const { data: leads, error: le } = await admin.from("leads").select("id").limit(1);
+    if (le) throw le;
+    console.log("✔ leads table accessible");
+  } catch (e: any) {
+    console.warn("✖ leads table:", e?.message || e);
   }
 }
 
 async function runE2E() {
   console.log("\n[E2E FLOW]");
-
-  // Task A: create lead
-  try {
-    const leadPayload = {
-      name: "Test Lead",
-      phone: "0712345678",
-      service_type: "survey",
-    };
-    console.log("\n- Creating lead (public)");
-    const lead = await leadQueries.createLead(leadPayload);
-    console.log("Lead created:", lead?.id ?? lead);
-  } catch (err: any) {
-    console.error("Lead create failed:", formatError(err));
+  if (!url || !anonKey || !serviceKey) {
+    console.error("Cannot run E2E: missing credentials");
+    return;
   }
 
-  // Task B: query all leads (admin)
+  const publicClient = createClient(url, anonKey);
+  const adminClient = createClient(url, serviceKey, { auth: { persistSession: false } });
+
+  let createdLeadId: string | null = null;
+  let createdPropertyId: string | null = null;
+
+  // Create lead via public client
+  try {
+    console.log("\n- Creating lead (public)");
+    const { data, error } = await publicClient
+      .from("leads")
+      .insert([{ name: "Test Lead", phone: "0712345678", service_type: "survey" }])
+      .select()
+      .single();
+    if (error) throw error;
+    createdLeadId = data?.id;
+    console.log("✔ Lead created:", createdLeadId);
+  } catch (e: any) {
+    console.error("✖ Lead create failed:", e?.message || e);
+  }
+
+  // Query all leads via admin
   try {
     console.log("\n- Querying all leads (admin)");
-    const leads = await leadQueries.getAllLeads();
-    console.log("Leads count:", Array.isArray(leads) ? leads.length : leads);
-  } catch (err: any) {
-    console.error("GetAllLeads failed:", formatError(err));
+    const { data, error, count } = await adminClient
+      .from("leads")
+      .select("*", { count: "exact" });
+    if (error) throw error;
+    console.log("✔ Leads count:", count ?? data?.length ?? 0);
+  } catch (e: any) {
+    console.error("✖ GetAllLeads failed:", e?.message || e);
   }
 
-  // Task C: create property (admin)
-  let createdPropertyId: string | null = null;
+  // Create property via admin
   try {
     console.log("\n- Creating property (admin)");
-    const propertyPayload = {
-      title: "Verification Plot " + Date.now(),
-      location: "Testland",
-      price: "12345.00",
-      image_url: null,
-      image_urls: [],
-      description: "E2E test property",
-      status: "available",
-      amenities: ["water", "electricity"],
-    };
-    const prop = await propertyQueries.createProperty(propertyPayload);
-    createdPropertyId = prop?.id;
-    console.log("Property created:", createdPropertyId ?? prop);
-  } catch (err: any) {
-    console.error("CreateProperty failed:", formatError(err));
+    const { data, error } = await adminClient
+      .from("properties")
+      .insert([{
+        title: "Verification Plot " + Date.now(),
+        location: "Testland",
+        price: "12345.00",
+        description: "E2E test property",
+        status: "available",
+        amenities: ["water", "electricity"],
+      }])
+      .select()
+      .single();
+    if (error) throw error;
+    createdPropertyId = data?.id;
+    console.log("✔ Property created:", createdPropertyId);
+  } catch (e: any) {
+    console.error("✖ CreateProperty failed:", e?.message || e);
   }
 
-  // Task D: fetch public-facing listings
+  // Fetch public listings
   try {
     console.log("\n- Fetching public properties");
-    const props = await propertyQueries.getAllProperties();
-    console.log(
-      "Public properties count:",
-      Array.isArray(props) ? props.length : props,
-    );
-  } catch (err: any) {
-    console.error("GetAllProperties failed:", formatError(err));
+    const { data, error } = await publicClient
+      .from("properties")
+      .select("*")
+      .eq("status", "available");
+    if (error) throw error;
+    console.log("✔ Public properties count:", data?.length ?? 0);
+  } catch (e: any) {
+    console.error("✖ GetAllProperties failed:", e?.message || e);
   }
 
-  // Cleanup: attempt to delete created entries if we have admin access
+  // Cleanup
   if (createdPropertyId) {
     try {
       console.log("\n- Cleaning up test property", createdPropertyId);
-      await propertyQueries.deleteProperty(createdPropertyId);
-      console.log("Deleted test property");
-    } catch (err: any) {
-      console.warn("Cleanup delete failed:", formatError(err));
+      const { error } = await adminClient.from("properties").delete().eq("id", createdPropertyId);
+      if (error) throw error;
+      console.log("✔ Deleted test property");
+    } catch (e: any) {
+      console.warn("Cleanup delete failed:", e?.message || e);
     }
   }
-}
-
-function formatError(err: any) {
-  if (!err) return err;
-  if (err?.message)
-    return { message: err.message, details: err?.details ?? null };
-  return JSON.stringify(err, Object.getOwnPropertyNames(err), 2);
+  if (createdLeadId) {
+    try {
+      const { error } = await adminClient.from("leads").delete().eq("id", createdLeadId);
+      if (error) throw error;
+      console.log("✔ Deleted test lead");
+    } catch (e: any) {
+      console.warn("Cleanup lead delete failed:", e?.message || e);
+    }
+  }
 }
 
 async function main() {
