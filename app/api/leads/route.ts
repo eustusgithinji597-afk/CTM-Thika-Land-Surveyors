@@ -66,3 +66,43 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: "Failed to update lead" }, { status: 500 });
   }
 }
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const token = req.cookies.get("admin_token")?.value;
+    if (!token) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    if (!supabaseUrl || !supabaseAnonKey) {
+      return NextResponse.json({ error: "Server config error" }, { status: 500 });
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      auth: { persistSession: false },
+    });
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    if (authError || !user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+    if (!id) {
+      return NextResponse.json({ error: "Lead ID is required" }, { status: 400 });
+    }
+
+    const { error } = await getAdminClient().from("leads").delete().eq("id", id);
+    if (error) throw error;
+
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    console.error("Error deleting lead:", error);
+    return NextResponse.json(
+      { error: "Failed to delete lead", details: { message: error?.message } },
+      { status: 500 },
+    );
+  }
+}
