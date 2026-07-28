@@ -108,7 +108,7 @@ export default function AdminDashboard() {
                   <p className="font-medium text-primary">{lead.name}</p>
                   <p className="text-sm text-muted-foreground">{lead.phone}</p>
                   <p className="text-xs text-muted-foreground capitalize">
-                    {lead.service_type.replace('_', ' ')} • {lead.status}
+                    {(lead as any).service_type?.replace('_', ' ')} • {lead.status}
                   </p>
                 </li>
               ))}
