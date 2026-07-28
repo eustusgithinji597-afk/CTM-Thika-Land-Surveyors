@@ -3,8 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Home, Users, CheckCircle2, AlertCircle } from 'lucide-react';
 import { MetricsCard } from '@/components/admin/metrics-card';
-import { Property } from '@/lib/db-schema';
-import { Lead } from '@/lib/db-schema';
+import type { Property, Lead } from '@/lib/db-schema';
 
 export default function AdminDashboard() {
   const [properties, setProperties] = useState<Property[]>([]);
