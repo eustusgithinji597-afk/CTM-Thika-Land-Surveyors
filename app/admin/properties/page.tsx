@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Property } from "@/lib/db-schema";
+import type { Property } from "@/lib/db-schema";
 import { PropertiesTable } from "@/components/admin/properties-table";
 import { PropertyFormModal } from "@/components/admin/property-form-modal";
 
@@ -25,8 +25,8 @@ export default function PropertiesPage() {
 
   const handleFormSubmit = async (data: any, imageFiles?: File[]) => {
     try {
-      let imageUrls: string[] = editingProperty?.imageUrls || [];
-      let imageUrl = editingProperty?.imageUrl;
+      let imageUrls: string[] = (editingProperty as any)?.image_urls || [];
+      let imageUrl = (editingProperty as any)?.image_url;
 
       if (imageFiles && imageFiles.length > 0) {
         const oversized = imageFiles.filter(

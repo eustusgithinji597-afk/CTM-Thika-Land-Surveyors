@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
-import { Property } from "@/lib/db-schema";
+import type { Property } from "@/lib/db-schema";
 
 const propertySchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),

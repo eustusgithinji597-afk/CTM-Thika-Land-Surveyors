@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Property } from '@/lib/db-schema';
+import type { Property } from '@/lib/db-schema';
 import { Edit2, Trash2, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -109,10 +109,10 @@ export function PropertiesTable({
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        {property.imageUrl ? (
+                        {(property as any).image_url ? (
                           <div className="relative w-10 h-10 bg-muted rounded">
                             <Image
-                              src={property.imageUrl}
+                              src={(property as any).image_url}
                               alt={property.title}
                               fill
                               className="object-cover rounded"

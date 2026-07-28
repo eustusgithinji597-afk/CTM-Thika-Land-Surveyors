@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Lead } from '@/lib/db-schema';
+import type { Lead } from '@/lib/db-schema';
 import { Download, CheckCircle2, Circle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -57,9 +57,9 @@ export function LeadsTable() {
     const csvData = leads.map((lead) => ({
       Name: lead.name,
       Phone: lead.phone,
-      'Service Type': lead.serviceType.replace('_', ' '),
+      'Service Type': (lead as any).service_type?.replace('_', ' '),
       Status: lead.status,
-      'Date': new Date(lead.createdAt).toLocaleDateString(),
+      'Date': new Date((lead as any).created_at).toLocaleDateString(),
     }));
 
     const csv = Papa.unparse(csvData);
@@ -124,7 +124,7 @@ export function LeadsTable() {
                 {leads.map((lead) => (
                   <tr key={lead.id} className="hover:bg-muted/50 transition">
                     <td className="px-6 py-4 text-sm text-muted-foreground">
-                      {new Date(lead.createdAt).toLocaleDateString()}
+                      {new Date((lead as any).created_at).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4">
                       <p className="font-medium text-primary">{lead.name}</p>
@@ -139,7 +139,7 @@ export function LeadsTable() {
                     </td>
                     <td className="px-6 py-4 text-sm">
                       <span className="capitalize">
-                        {lead.serviceType.replace('_', ' ')}
+                        {(lead as any).service_type?.replace('_', ' ')}
                       </span>
                     </td>
                     <td className="px-6 py-4">
