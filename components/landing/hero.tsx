@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { MessageCircle, Phone } from 'lucide-react';
 
 export function Hero() {
-  const displayPhone = '0769311896';
+  const displayPhone = '+254 769 311 896';
   const whatsappNumber = '254769311896';
   const whatsappMessage = encodeURIComponent(
     'Hi CTM Thika Land Surveyors, I am interested in your services.'

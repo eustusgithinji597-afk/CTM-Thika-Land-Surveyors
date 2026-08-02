@@ -3,10 +3,13 @@ import { Hero } from "@/components/landing/hero";
 import { TrustAnchors } from "@/components/landing/trust-anchors";
 import { PropertiesGrid } from "@/components/landing/properties-grid";
 import { Services } from "@/components/landing/services";
+import { About } from "@/components/landing/about";
+import { Testimonials } from "@/components/landing/testimonials";
 import { LeadForm } from "@/components/landing/lead-form";
 import { LandsNewsWidget } from "@/components/landing/lands-news-widget";
 import { PropertyFAQ } from "@/components/landing/property-faq";
 import { Footer } from "@/components/landing/footer";
+import { FloatingWhatsApp } from "@/components/landing/floating-whatsapp";
 import { Property } from "@/types";
 import { supabasePublic } from "@/lib/supabase-client";
 
@@ -43,11 +46,13 @@ export default async function Home() {
       <Header />
       <Hero />
       <TrustAnchors />
+      <About />
 
-      {/* 📍 Inject initial database records directly into the real-time grid */}
+      {/* Inject initial database records directly into the real-time grid */}
       <PropertiesGrid initialProperties={initialProperties} />
 
       <Services />
+      <Testimonials />
 
       <section className="bg-[#F1F5F2] px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
@@ -58,6 +63,7 @@ export default async function Home() {
 
       <LeadForm />
       <Footer />
+      <FloatingWhatsApp />
     </main>
   );
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, ShieldCheck } from 'lucide-react';
 
 interface FAQItem {
   id: string;
@@ -49,7 +49,7 @@ export function PropertyFAQ() {
         {/* Header Section */}
         <div className="text-center mb-6">
           <h3 className="text-2xl font-bold text-primary mb-2 flex items-center justify-center gap-2">
-            <span className="text-2xl">🛡️</span>
+            <ShieldCheck className="w-6 h-6 text-accent" />
             Land & Surveying FAQs
           </h3>
           <p className="text-sm text-[#40576A] leading-relaxed">

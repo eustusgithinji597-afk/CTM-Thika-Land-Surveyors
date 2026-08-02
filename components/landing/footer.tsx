@@ -1,4 +1,4 @@
-import { Phone, MessageCircle, MapPin, Mail, Share2, Heart } from 'lucide-react';
+import { Phone, MessageCircle, MapPin, Mail, Clock } from 'lucide-react';
 
 export function Footer() {
   return (
@@ -17,13 +17,23 @@ export function Footer() {
             <h4 className="font-semibold text-lg mb-4">Quick Links</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="#properties" className="text-white/80 hover:text-accent transition">
+                <a href="#verified-plots-section" className="text-white/80 hover:text-accent transition">
                   Available Properties
                 </a>
               </li>
               <li>
                 <a href="#services" className="text-white/80 hover:text-accent transition">
                   Our Services
+                </a>
+              </li>
+              <li>
+                <a href="#about" className="text-white/80 hover:text-accent transition">
+                  About Us
+                </a>
+              </li>
+              <li>
+                <a href="#testimonials" className="text-white/80 hover:text-accent transition">
+                  Testimonials
                 </a>
               </li>
               <li>
@@ -45,6 +55,13 @@ export function Footer() {
                 +254 769 311 896
               </a>
               <a
+                href="mailto:ctmthika@gmail.com"
+                className="flex items-center gap-2 text-white/80 hover:text-accent transition"
+              >
+                <Mail className="w-4 h-4 flex-shrink-0" />
+                ctmthika@gmail.com
+              </a>
+              <a
                 href={`https://wa.me/254769311896`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -57,6 +74,24 @@ export function Footer() {
                 <MapPin className="w-4 h-4 flex-shrink-0" />
                 Thika, Johana Center, RM 201
               </div>
+              <div className="flex items-center gap-2 text-white/80">
+                <Clock className="w-4 h-4 flex-shrink-0" />
+                Mon-Fri: 8AM-5PM | Sat: 9AM-1PM
+              </div>
+            </div>
+
+            {/* Google Map Embed */}
+            <div className="mt-4 rounded-lg overflow-hidden border border-white/20">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.7!2d37.0722405!3d-1.0356365!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f4e85763bf8e7%3A0x3f9b4e3820475a9f!2sThika%20Prime%20Land%20Merchants%20Ctm%20Land%20Surveyors!5e0!3m2!1sen!2ske!4v1722000000000"
+                width="100%"
+                height="150"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="CTM Thika Office Location"
+              />
             </div>
           </div>
         </div>
@@ -64,7 +99,7 @@ export function Footer() {
         <div className="border-t border-white/20 pt-8 mb-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
             <p className="text-sm text-white/60">
-              © {new Date().getFullYear()} CTM Thika Land Surveyors. All rights reserved.
+              &copy; {new Date().getFullYear()} CTM Thika Land Surveyors. All rights reserved.
             </p>
             <div className="flex items-center gap-3">
               <a

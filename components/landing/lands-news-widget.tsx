@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ChevronRight, ChevronLeft } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Newspaper } from 'lucide-react';
 
 interface NewsArticle {
   id: number;
@@ -87,7 +87,7 @@ export function LandsNewsWidget() {
         {/* Header Section */}
         <div className="text-center mb-6">
           <h3 className="text-2xl font-bold text-primary mb-2 flex items-center justify-center gap-2">
-            <span className="text-2xl">📰</span>
+            <Newspaper className="w-6 h-6 text-accent" />
             Ministry of Lands News
           </h3>
           <p className="text-sm text-[#40576A] leading-relaxed">

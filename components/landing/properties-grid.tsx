@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Property } from "@/types";
 import { supabasePublic } from "@/lib/supabase-client";
 import { PropertyDetailModal } from "./property-detail-modal";
+import { MapPin } from "lucide-react";
 
 export function PropertiesGrid({
   initialProperties,
@@ -65,8 +66,9 @@ export function PropertiesGrid({
 
   return (
     <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto" id="verified-plots-section">
-      <h2 className="text-3xl font-bold mb-8 text-[#0F294A]">
-        📍 Verified Plots for Sale
+      <h2 className="text-3xl font-bold mb-8 text-[#0F294A] flex items-center gap-3">
+        <MapPin className="w-8 h-8 text-accent" />
+        Verified Plots for Sale
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {properties.length === 0 ? (

@@ -1,3 +1,7 @@
+'use client';
+
+import { Search } from 'lucide-react';
+
 export function Services() {
   const services = [
     {
@@ -38,6 +42,13 @@ export function Services() {
     },
   ];
 
+  const handleServiceClick = (serviceTitle: string) => {
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <section className="py-20 px-4 sm:px-6 lg:px-8 bg-[#EDF4F7]" id="services">
       <div className="max-w-6xl mx-auto">
@@ -50,26 +61,27 @@ export function Services() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services.map((service, index) => {
-            const searchQuery = encodeURIComponent(service.title + ' Kenya');
-            const searchUrl = `https://www.google.com/search?q=${searchQuery}`;
-            return (
-              <a
-                key={index}
-                href={searchUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-[#FAFCFD] rounded-xl border-2 border-[#D8E5EB] hover:border-[#E3C34F] hover:shadow-xl transition-all duration-300 group overflow-hidden block p-6"
-              >
-                <h3 className="font-bold text-lg text-primary mb-2 group-hover:text-[#8A6A00] transition-colors duration-200">
-                  {service.title}
-                </h3>
-                <p className="text-sm text-[#344B5F] leading-relaxed">
-                  {service.description}
-                </p>
-              </a>
-            );
-          })}
+          {services.map((service, index) => (
+            <div
+              key={index}
+              onClick={() => handleServiceClick(service.title)}
+              className="bg-[#FAFCFD] rounded-xl border-2 border-[#D8E5EB] hover:border-[#E3C34F] hover:shadow-xl transition-all duration-300 group overflow-hidden block p-6 cursor-pointer"
+            >
+              <div className="flex items-start gap-3 mb-3">
+                <div className="w-10 h-10 rounded-lg bg-[#0B3D66]/10 flex items-center justify-center flex-shrink-0 group-hover:bg-[#E3C34F]/20 transition-colors duration-300">
+                  <Search className="w-5 h-5 text-[#0B3D66] group-hover:text-[#8A6A00] transition-colors duration-200" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg text-primary group-hover:text-[#8A6A00] transition-colors duration-200">
+                    {service.title}
+                  </h3>
+                </div>
+              </div>
+              <p className="text-sm text-[#344B5F] leading-relaxed">
+                {service.description}
+              </p>
+            </div>
+          ))}
         </div>
       </div>
     </section>
